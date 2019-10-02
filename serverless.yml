@@ -5,49 +5,38 @@ service: short-description-displayer # NOTE: update this with your service name
 # frameworkVersion: "=X.X.X"
 
 provider:
-  name: aws
-  runtime: nodejs8.10
+    name: aws
+    runtime: nodejs8.10
 
-# you can overwrite defaults here
-  stage: live
-  region: us-east-1
-
-# you can add statements to the Lambda function's IAM Role here
-#  iamRoleStatements:
-#    - Effect: "Allow"
-#      Action:
-#        - "s3:ListBucket"
-#      Resource: { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "ServerlessDeploymentBucket" } ] ]  }
-#    - Effect: "Allow"
-#      Action:
-#        - "s3:PutObject"
-#      Resource:
-#        Fn::Join:
-#          - ""
-#          - - "arn:aws:s3:::"
-#            - "Ref" : "ServerlessDeploymentBucket"
-#            - "/*"
-
-# you can define service wide environment variables here
-#  environment:
-#    variable1: value1
+    # you can overwrite defaults here
+    stage: live
+    region: us-east-1
 
 # you can add packaging information here
 package:
     exclude:
         - .env
-    include:
-        package-lock.json
+    include: package-lock.json
 
 functions:
-  renderHTML:
-    handler: handler.renderHTML
+    renderHTML:
+        handler: handler.renderHTML
 
-    events:
-        - http:
-            path: ''
-            method: get
+        events:
+            - http:
+                  path: ""
+                  method: get
 
 plugins:
     - serverless-plugin-typescript
     - serverless-offline
+    - serverless-domain-manager
+
+custom:
+    customDomain:
+        domainName: descriptions.barnesfoc.us
+        stage: live
+        certificateName: "descriptions.barnesfoc.us"
+        createRoute53Record: true
+        endpointType: "regional"
+        securityPolicy: tls_1_2
