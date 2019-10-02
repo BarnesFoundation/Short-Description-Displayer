@@ -93,15 +93,28 @@ const generateHTMLTable = (records: any[]): string => {
 	records.forEach((record, index) => {
 		const { invno, shortDescription } = record;
 
-
 		let trStyle = ``
 
 		trStyle += (index % 2 == 0) ? 'background-color: #f2f2f2;;' : 'background-color: #ffffff';
 
-		tableBody += `<tr style="${trStyle}"><td style=${tdStyle}>${invno}</td><td style=${tdStyle}>${shortDescription}</td></tr>`;
+		tableBody += `<tr style="${trStyle}"><td style=${tdStyle}>${invno}</td><td style=${tdStyle}>${escapeHTML(shortDescription)}</td></tr>`;
 	});
 
 	const generatedHTML = tableHeader + tableBody + tableCloser;
 
 	return generatedHTML;
+}
+
+const escapeHTML = (htmlString: string): string => {
+    return htmlString.replace(/[&<>"]/g,(tag) => {
+		const charsToReplace = {
+            '&': "&amp;",
+            '<': "&lt;",
+			'>': "&gt;",
+			'"': "&quot;",
+			"'": "&#039;"
+        };
+
+		return charsToReplace[tag] || tag;
+	});
 }
