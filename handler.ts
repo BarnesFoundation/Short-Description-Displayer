@@ -6,12 +6,14 @@ export const renderHTML = async (event: any, context: Context, callback: Callbac
 	const records = await retrieveRecords();
 	const generatedHTMLTable = generateHTMLTable(records);
 	const title = `<p style="font-family: Calibre,sans-serif;">Total records that have a short description: ${records.length}</p>`;
-	const html = title + generatedHTMLTable;
+	const meta = `<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">`;
+
+	const html = meta +title + generatedHTMLTable;
 
 	return {
 		statusCode: 200,
 		headers: {
-			'Content-Type': 'text/html'
+			'Content-Type': 'text/html; charset=utf-8'
 		},
 		body: html,
 	};
