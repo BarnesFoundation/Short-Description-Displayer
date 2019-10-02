@@ -35,10 +35,9 @@ provider:
 # you can add packaging information here
 package:
     exclude:
-        - node_modules/**/*
         - .env
     include:
-        handler.ts
+        package-lock.json
 
 functions:
   renderHTML:
