@@ -5,7 +5,7 @@ export const renderHTML = async (event: any, context: Context, callback: Callbac
 
 	const records = await retrieveRecords();
 	const generatedHTMLTable = generateHTMLTable(records);
-	const title = `<p style="font-family: Trebuchet MS;">Total records that have a short description: ${records.length}</p>`;
+	const title = `<p style="font-family: Calibre,sans-serif;">Total records that have a short description: ${records.length}</p>`;
 	const html = title + generatedHTMLTable;
 
 	return {
@@ -68,7 +68,7 @@ const generateHTMLTable = (records: any[]): string => {
 
 	const tableStyle = `"
 	border-collapse: collapse; 
-	font-family: Trebuchet MS;
+	font-family: Calibre,sans-serif;
 	width: 100%;
 	"`;
 
