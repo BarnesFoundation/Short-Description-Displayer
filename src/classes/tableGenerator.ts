@@ -14,9 +14,10 @@ export class TableGenerator {
 		const records = await this.retrieveTableRecords();
 
 		const generatedHTMLTable = this.generateHTMLTable(records);
-		const generatedTitle = this.generateTitle(records);
+		const generatedSubtitle = this.generateSubtitle(records);
+		const generatedTitle = this.generateTitle();
 
-		const html = `<div id="${this.tb.id}">` + generatedTitle + generatedHTMLTable + `</div>`;
+		const html = `<div id="${this.tb.id}">` + generatedTitle + generatedSubtitle + generatedHTMLTable + `</div>`;
 
 		return html;
 	}
@@ -120,18 +121,35 @@ export class TableGenerator {
 		});
 	}
 
-	/** Generates the title header for the table */
-	private generateTitle(records: any[]): string {
+	/** Generates the subtitle for the table */
+	private generateSubtitle(records: any[]): string {
+
+		let subtitle: string;
+		const subtitleStyle=`font-family: Calibre,sans-serif;`;
+
+		if (this.tb.id === 'shortDescription') {
+			subtitle = `<p style="${subtitleStyle}">Total records that have a short description: ${records.length}</p>`;
+		}
+
+		if (this.tb.id === 'imageSecret') {
+			subtitle = `<p style="${subtitleStyle}">Total records that do not have an associated image: ${records.length}</p>`;
+		}
+
+		return subtitle;
+	}
+
+	/** Generates the subtitle for the table */
+	private generateTitle(): string {
 
 		let title: string;
 		const titleStyle=`font-family: Calibre,sans-serif;`;
 
 		if (this.tb.id === 'shortDescription') {
-			title = `<p style="${titleStyle}">Total records that have a short description: ${records.length}</p>`;
+			title = `<h3 style="${titleStyle}">Short Descriptions Table</h3>`;
 		}
 
 		if (this.tb.id === 'imageSecret') {
-			title = `<p style="${titleStyle}">Total records that do not have an associated image: ${records.length}</p>`;
+			title = `<h3 style="${titleStyle}">Missing Images Table</h3>`;;
 		}
 
 		return title;

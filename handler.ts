@@ -19,6 +19,9 @@ const script = `
 		let sdTable;
 		let isTable;
 
+		// Container holder
+		let container;
+
 		const updateButtonText = (displayName) => {
 
 			// Add text to the button
@@ -29,7 +32,7 @@ const script = `
 		document.addEventListener('DOMContentLoaded', () => { 
 			updateButtonText('Show Missing Images'); 
 
-			const container = document.getElementById('tableContainer');
+			container = document.getElementById('tableContainer');
 			sdTable = document.getElementById('shortDescription');
 			isTable = document.getElementById('imageSecret');
 
@@ -41,11 +44,7 @@ const script = `
 
 			let newDisplayName;
 			const currentDisplayName =  document.getElementById('displayBtn').innerHTML;
-			const container = document.getElementById('tableContainer');
-
-			console.log(sdTable);
-			console.log(isTable);
-
+			
 			if (currentDisplayName === 'Show Missing Images') {
 				newDisplayName = 'Show Short Descriptions';
 				container.removeChild(sdTable);
