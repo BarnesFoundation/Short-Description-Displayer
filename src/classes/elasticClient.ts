@@ -1,5 +1,5 @@
 import { Client } from '@elastic/elasticsearch';
-import { Config } from './config';
+import { Config } from '../config';
 
 const { esCloudId: id, esUser: username, esPassword: password, esPort } = Config;
 
