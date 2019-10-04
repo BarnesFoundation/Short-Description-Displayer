@@ -6,26 +6,62 @@ const meta = `<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"
 
 const button = `<button 
 	id="displayBtn"
-	onclick="onButtonClick()"
+	onclick="toggleTable()"
 	></button>`;
 
-	const script = `
+const script = `
 	<script>
+
 		// Initial table to render
 		let tableToDisplay = 'Short Description';
 
-		document.addEventListener('DOMContentLoaded', () => {
+		// Table holders
+		let sdTable;
+		let isTable;
+
+		const updateButtonText = (displayName) => {
 
 			// Add text to the button
 			const btn = document.getElementById('displayBtn');
-			btn.innerHTML = tableToDisplay;
+			btn.innerHTML = displayName;
+		}
 
+		document.addEventListener('DOMContentLoaded', () => { 
+			updateButtonText('Show Missing Images'); 
+
+			const container = document.getElementById('tableContainer');
+			sdTable = document.getElementById('shortDescription');
+			isTable = document.getElementById('imageSecret');
+
+			container.removeChild(isTable);
 		}, false);
 
 		// Handle button click
-		const onButtonClick = () => {
-			console.log('Hi from the button');
+		const toggleTable = () => {
+
+			let newDisplayName;
+			const currentDisplayName =  document.getElementById('displayBtn').innerHTML;
+			const container = document.getElementById('tableContainer');
+
+			console.log(sdTable);
+			console.log(isTable);
+
+			if (currentDisplayName === 'Show Missing Images') {
+				newDisplayName = 'Show Short Descriptions';
+				container.removeChild(sdTable);
+				container.appendChild(isTable);
+			}
+
+			if (currentDisplayName === 'Show Short Descriptions') {
+				newDisplayName = 'Show Missing Images';
+				container.removeChild(isTable);
+				container.appendChild(sdTable);
+			}
+
+			updateButtonText(newDisplayName);
 		}
+
+		
 	</script>`;
 
 
@@ -36,9 +72,18 @@ export const renderHTML = async (event: any, context: Context, callback: Callbac
 
 	const sdTable = await new TableGenerator(shortDescriptionObject).generate();
 	const isTable = await new TableGenerator(imageSecretsObject).generate();
-	
 
-	const body = `<html>` + script + meta + button + sdTable + isTable + `</html>`;
+
+	const body = `<html>` + 
+	script + 
+	meta + 
+	button + 
+	`<div id="tableContainer">
+	${sdTable}
+	${isTable}
+	</div>
+	` +
+	`</html>`;
 
 	return {
 		statusCode: 200,
