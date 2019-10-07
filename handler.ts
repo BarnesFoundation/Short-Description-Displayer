@@ -1,88 +1,50 @@
 import { Handler, Context, Callback } from 'aws-lambda';
+
 import { TableGenerator } from './src/classes/tableGenerator';
-import { TableObject } from './src/classes/tableObject';
+import { tableObjects } from './src/constants/tableObjects';
+import { script } from './src/script';
 
 const meta = `<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">`;
 
-const button = `<button 
-	id="displayBtn"
-	onclick="toggleTable()"
-	></button>`;
+const imageSecretButton = `<button
+	id="imageSecretButton"
+	onclick="updateDisplayedTable('imageSecret')"
+	>Show Missing Images</button>`;
 
-const script = `
-	<script>
+const shortDescriptionButton = `<button
+	id="shortDescriptionButton"
+	onclick="updateDisplayedTable('shortDescription')"
+	>Show Short Descriptions</button>`;
 
-		// Initial table to render
-		let tableToDisplay = 'Short Description';
+const provenanceButton = `<button
+	id="provenanceButton"
+	onclick="updateDisplayedTable('provenance')"
+	>Show Provenances</button>`;
 
-		// Table holders
-		let sdTable;
-		let isTable;
+const exhibitionHistoryButton = `<button
+	id="exhibitionHistoryButton"
+	onclick="updateDisplayedTable('exhibitionHistory')"
+	>Show Exhibition Histories</button>`;
 
-		// Container holder
-		let container;
-
-		const updateButtonText = (displayName) => {
-
-			// Add text to the button
-			const btn = document.getElementById('displayBtn');
-			btn.innerHTML = displayName;
-		}
-
-		document.addEventListener('DOMContentLoaded', () => { 
-			updateButtonText('Show Missing Images'); 
-
-			container = document.getElementById('tableContainer');
-			sdTable = document.getElementById('shortDescription');
-			isTable = document.getElementById('imageSecret');
-
-			container.removeChild(isTable);
-		}, false);
-
-		// Handle button click
-		const toggleTable = () => {
-
-			let newDisplayName;
-			const currentDisplayName =  document.getElementById('displayBtn').innerHTML;
-			
-			if (currentDisplayName === 'Show Missing Images') {
-				newDisplayName = 'Show Short Descriptions';
-				container.removeChild(sdTable);
-				container.appendChild(isTable);
-			}
-
-			if (currentDisplayName === 'Show Short Descriptions') {
-				newDisplayName = 'Show Missing Images';
-				container.removeChild(isTable);
-				container.appendChild(sdTable);
-			}
-
-			updateButtonText(newDisplayName);
-		}
-
-		
-	</script>`;
+const buttons = `<div>${shortDescriptionButton} ${imageSecretButton} ${provenanceButton} ${exhibitionHistoryButton}</div>`;
 
 
 export const renderHTML = async (event: any, context: Context, callback: Callback) => {
 
-	const shortDescriptionObject = new TableObject('shortDescription', 'Short Descriptions');
-	const imageSecretsObject = new TableObject('imageSecret', 'Image Secrets');
+	const { shortDescription, imageSecret, provenance, exhibitionHistory } = tableObjects;
 
-	const sdTable = await new TableGenerator(shortDescriptionObject).generate();
-	const isTable = await new TableGenerator(imageSecretsObject).generate();
+	const sdTable = await new TableGenerator(shortDescription).generate();
+	const isTable = await new TableGenerator(imageSecret).generate();
+	const pTable = await new TableGenerator(provenance).generate();
+	const ehTable = await new TableGenerator(exhibitionHistory).generate();
 
-
-	const body = `<html>` + 
-	script + 
-	meta + 
-	button + 
-	`<div id="tableContainer">
-	${sdTable}
-	${isTable}
-	</div>
+	const body = `<html>` +
+		script +
+		meta +
+		buttons +
+		`<div id="tableContainer"> ${sdTable} ${isTable} ${pTable} ${ehTable} </div>
 	` +
-	`</html>`;
+		`</html>`;
 
 	return {
 		statusCode: 200,

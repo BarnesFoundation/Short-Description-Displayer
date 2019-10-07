@@ -1,12 +1,12 @@
-import { TableObject } from './tableObject';
+import { TableObjectInterface } from '../constants/tableObjects';
 import { elasticClient } from './elasticClient';
 
 
 export class TableGenerator {
 
-	tb: TableObject;
+	tb: TableObjectInterface;
 
-	constructor(tb: TableObject) {
+	constructor(tb: TableObjectInterface) {
 		this.tb = tb;
 	}
 
@@ -35,14 +35,19 @@ export class TableGenerator {
 		const { hits }: { hits: any[] } = result.body.hits;
 		let filteredResults;
 
-		if (id === 'shortDescription') {
-			filteredResults = hits.reduce(this.filterForShortDescriptions, []);
-		}
+		switch (id) {
 
-		if (id === 'imageSecret') {
-			filteredResults = hits.reduce(this.filterForImageSecrets, []);
-		}
+			case 'shortDescription':
+				filteredResults = hits.reduce(this.filterForShortDescriptions, []);
+				break;
 
+			case 'imageSecret':
+				filteredResults = hits.reduce(this.filterForImageSecrets, []);
+				break;
+
+			default:
+				filteredResults = hits.reduce(this.filterForSource, []);
+		}
 		return filteredResults;
 	}
 
@@ -60,6 +65,11 @@ export class TableGenerator {
 		return list;
 	}
 
+	private filterForSource = (list: any[], current): any[] => {
+		list.push(current._source);
+
+		return list;
+	}
 
 	/** Generates the HTML table using the records list */
 	private generateHTMLTable = (records: any[]): string => {
@@ -93,10 +103,23 @@ export class TableGenerator {
 			const { invno } = record;
 
 			let tdData = record[this.tb.id];
-			tdData = (this.tb.id === 'shortDescription') ? this.escapeHTML(tdData) : 'None';
 
-			let trStyle = ``
-			trStyle += (index % 2 == 0) ? 'background-color: #f2f2f2;;' : 'background-color: #ffffff';
+			switch (this.tb.id) {
+
+				case 'shortDescription':
+					tdData = this.escapeHTML(tdData);
+					break;
+
+				case 'imageSecret':
+					tdData = 'None';
+					break;
+
+				default:
+					tdData = tdData;
+					break;
+			}
+
+			let trStyle = (index % 2 == 0) ? 'background-color: #f2f2f2;;' : 'background-color: #ffffff';
 
 			tableBody += `<tr style="${trStyle}"><td style=${tdStyle}>${invno}</td><td style=${tdStyle}>${tdData}</td></tr>`;
 		});
@@ -124,16 +147,10 @@ export class TableGenerator {
 	/** Generates the subtitle for the table */
 	private generateSubtitle(records: any[]): string {
 
-		let subtitle: string;
-		const subtitleStyle=`font-family: Calibre,sans-serif;`;
+		const subtitleStyle = `font-family: Calibre,sans-serif;`;
 
-		if (this.tb.id === 'shortDescription') {
-			subtitle = `<p style="${subtitleStyle}">Total records that have a short description: ${records.length}</p>`;
-		}
-
-		if (this.tb.id === 'imageSecret') {
-			subtitle = `<p style="${subtitleStyle}">Total records that do not have an associated image: ${records.length}</p>`;
-		}
+		const text = this.tb.subTitle(records.length);
+		const subtitle = `<p style="${subtitleStyle}">${text}</p>`;
 
 		return subtitle;
 	}
@@ -141,16 +158,8 @@ export class TableGenerator {
 	/** Generates the subtitle for the table */
 	private generateTitle(): string {
 
-		let title: string;
-		const titleStyle=`font-family: Calibre,sans-serif;`;
-
-		if (this.tb.id === 'shortDescription') {
-			title = `<h3 style="${titleStyle}">Short Descriptions Table</h3>`;
-		}
-
-		if (this.tb.id === 'imageSecret') {
-			title = `<h3 style="${titleStyle}">Missing Images Table</h3>`;;
-		}
+		const titleStyle = `font-family: Calibre,sans-serif;`;
+		const title = `<h3 style="${titleStyle}">${this.tb.title}</h3>`;
 
 		return title;
 	}
