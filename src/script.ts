@@ -3,7 +3,7 @@
 
 export const script = 
 `<script>
-// Initial table to render
+// Table that is displayed
 let tableToDisplay;
 
 // Table holders
@@ -16,36 +16,39 @@ let ehTable;
 let container;
 
 /** Once the page has loaded */
-window.onload = () => {
+const onLoad = () => {
 
+	// Get the container
 	container = document.getElementById('tableContainer');
 
 	// Hook up the tables
 	sdTable = document.getElementById('shortDescription');
 	isTable = document.getElementById('imageSecret');
 	pTable = document.getElementById('provenance');
-	ehTable = document.getElementById('exhibitionHistory')
-
-	container.removeChild(isTable);
-	container.removeChild(pTable);
-	container.removeChild(ehTable);
+	ehTable = document.getElementById('exhibitionHistory');
 
 	// Initial table to display
 	updateDisplayedTable('shortDescription');
 }
 
+/** Updates the table presently displayed */
 const updateDisplayedTable = (id) => {
 
 	tableToDisplay = id;
-
 	const children = container.children;
+	const childrenToRemove = [];
 
-	// Remove all tables from the container
 	for (let i = 0; i < children.length; i++) {
-		container.removeChild(children[i]);
+		const child = children[i];
+		childrenToRemove.push(child);
 	}
 
-	// Set the appropriate one based on the button
+	// Remove the childs
+	childrenToRemove.forEach((child) => { 
+		container.removeChild(child); 
+	});
+
+	// Append the appropriate one based on the button
 	switch (id) {
 		case 'shortDescription':
 			container.appendChild(sdTable);
@@ -62,9 +65,12 @@ const updateDisplayedTable = (id) => {
 		case 'exhibitionHistory':
 			container.appendChild(ehTable);
 			break;
+
 		default:
 			null;
 	}
 }
+
+window.addEventListener('DOMContentLoaded', onLoad);
 
 </script>`
