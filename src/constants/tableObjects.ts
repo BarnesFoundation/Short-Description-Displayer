@@ -23,9 +23,9 @@ export const tableObjects: { [key:string]: TableObjectInterface } = {
 	'imageSecret' : {
 		id: 'imageSecret',
 		title: 'Missing Images Table',
-		subTitle: (recordsNumber) => { return `Total records that do not have an associated image: ${recordsNumber}`; },
-		headerColumns: ['Invno #', 'Associated Image'],
-		columns: ['invno', 'imageSecret'],
+		subTitle: (recordsNumber) => { return `Total records that do not have an associated image: ${recordsNumber}. Any records that have no image and no ensemble index have been filtered out from this table`; },
+		headerColumns: ['Invno #', 'Ensemble Index'],
+		columns: ['invno', 'ensembleIndex'],
 		query: imageSecretsQuery
 	},
 
