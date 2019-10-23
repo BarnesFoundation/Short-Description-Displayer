@@ -38,12 +38,13 @@ export const renderHTML = async (event: any, context: Context, callback: Callbac
 	const pTable = await new TableGenerator(provenance).generate();
 	const ehTable = await new TableGenerator(exhibitionHistory).generate();
 
+	const tableContainer = `<div id="tableContainer"> ${sdTable} ${isTable} ${pTable} ${ehTable} </div>`;
+
 	const body = `<html>` +
 		script +
 		meta +
 		buttons +
-		`<div id="tableContainer"> ${sdTable} ${isTable} ${pTable} ${ehTable} </div>
-	` +
+		tableContainer +
 		`</html>`;
 
 	return {
