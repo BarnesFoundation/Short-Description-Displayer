@@ -20,7 +20,12 @@ export const shortDescriptionsQuery = {
 }
 
 export const imageSecretsQuery = {
-	"_source": ["invno", "id"],
+	"_source": [
+		"invno",
+		"id",
+		"imageSecret",
+		"ensembleIndex"
+	],
 	"size": 4000,
 	"sort": [
 		{
@@ -31,11 +36,18 @@ export const imageSecretsQuery = {
 	],
 	"query": {
 		"bool": {
-			"must_not": {
-				"exists": {
-					"field": "imageSecret"
+			"must_not": [
+				{
+					"exists": {
+						"field": "imageSecret"
+					}
+				},
+				{
+					"term": {
+						"ensembleIndex": ""
+					}
 				}
-			}
+			]
 		}
 	}
 }
