@@ -110,12 +110,8 @@ export class TableGenerator {
 					tdData = this.escapeHTML(tdData);
 					break;
 
-				case 'imageSecret':
-					tdData = 'None';
-					break;
-
 				default:
-					tdData = tdData;
+					tdData = record['ensembleIndex'];
 					break;
 			}
 
