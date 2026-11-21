@@ -12,7 +12,7 @@
     "@types/aws-lambda": "^8.10.33",
     "@types/dotenv": "^6.1.1",
     "serverless-domain-manager": "^3.3.0",
-    "serverless-offline": "^5.11.0",
+    "serverless-offline": "^14.8.5",
     "serverless-plugin-typescript": "^1.1.9"
   },
   "dependencies": {
